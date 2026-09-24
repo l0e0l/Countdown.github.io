@@ -1,2 +1,1 @@
-# Countdown-Page.github.io
-Animation Countdown Page
+# Animation Countdown Page
