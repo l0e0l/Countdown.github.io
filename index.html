@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown-Page</title>
+    <style>
+        :root {
+            --bg-dark: #050608;
+            --metal-panel: linear-gradient(135deg, #2c3035 0%, #121416 100%);
+            --shape-color: #FF6622; 
+            --slot-w: 65px;
+            --slot-h: 100px;
+            --morph-easing: cubic-bezier(0.34, 1.56, 0.64, 1); 
+            --morph-duration: 0.6s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            perspective: 1400px;
+        }
+
+        .industrial-panel {
+            background: var(--metal-panel);
+            padding: 45px 55px;
+            border-radius: 24px;
+            box-shadow: 0 60px 120px rgba(0,0,0,0.95), inset 0 2px 3px rgba(255,255,255,0.15), inset 0 -4px 12px rgba(0,0,0,0.85);
+            border: 2px solid #1a1c1e;
+            display: flex;
+            gap: 25px;
+            transform: rotateX(12deg) rotateY(-5deg);
+            transform-style: preserve-3d;
+        }
+
+        .time-chassis {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chassis-label {
+            font-size: 13px;
+            color: #5d656d;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .slots-bezel {
+            display: flex;
+            gap: 6px;
+            background: #020304;
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: inset 0 10px 30px rgba(0,0,0,1);
+        }
+
+        .numero-counting-wrapper {
+            position: relative;
+            width: var(--slot-w);
+            height: var(--slot-h);
+            background-color: #000000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 14px 20px rgba(0,0,0,0.95), inset 0 -14px 20px rgba(0,0,0,0.95);
+        }
+
+        .numero-shape {
+            position: relative;
+            background-color: var(--shape-color);
+            width: 76%;
+            height: 82%;
+            margin: 8% auto 0 auto;
+            border-radius: 10px;
+            border: none; 
+            box-shadow: 0 0 20px rgba(255, 102, 34, 0.2);
+            box-sizing: border-box;
+        }
+
+        .numero-shape::before, .numero-shape::after {
+            content: " ";
+            position: absolute;
+            background-color: #000000;
+            transition: all var(--morph-duration) var(--morph-easing);
+            will-change: top, left, width, height, opacity;
+        }
+
+        .glass-overlay {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 10px;
+        }
+
+        .num-0::before { top: 14%; left: 18%; width: 64%; height: 72%; opacity: 1; }
+        .num-0::after  { top: 50%; left: 50%; width: 0%; height: 0%; opacity: 0; }
+
+        .num-1::before { top: 18%; left: 0%; width: 38%; height: 64%; opacity: 1; border-top-right-radius: 8px; }
+        .num-1::after  { top: 0%; left: 65%; width: 38%; height: 82%; opacity: 1; border-bottom-left-radius: 8px; }
+
+        .num-2::before { top: 15%; left: 0%; width: 80%; height: 24%; opacity: 1; }
+        .num-2::after  { top: 56%; left: 22%; width: 84%; height: 28%; opacity: 1; }
+
+        .num-3::before { top: 15%; left: 0%; width: 81%; height: 24%; opacity: 1; }
+        .num-3::after  { top: 56%; left: 0%; width: 81%; height: 26%; opacity: 1; }
+
+        .num-4::before { top: 0%; left: 24%; width: 52%; height: 42%; opacity: 1; }
+        .num-4::after  { top: 56%; left: 0%; width: 76%; height: 44%; opacity: 1; }
+
+        .num-5::before { top: 15%; left: 24%; width: 80%; height: 25%; opacity: 1; }
+        .num-5::after  { top: 56%; left: 0%; width: 80%; height: 26%; opacity: 1; }
+
+        .num-6::before { top: 14%; left: 23%; width: 80%; height: 24%; opacity: 1; }
+        .num-6::after  { top: 57%; left: 22%; width: 60%; height: 26%; opacity: 1; }
+
+        .num-7::before { top: 16%; left: 0%; width: 77%; height: 85%; opacity: 1; }
+        .num-7::after  { top: 50%; left: 50%; width: 0%; height: 0%; opacity: 0; }
+
+        .num-8::before { top: 14%; left: 16%; width: 68%; height: 24%; opacity: 1; }
+        .num-8::after  { top: 57%; left: 16%; width: 68%; height: 26%; opacity: 1; }
+
+        .num-9::before { top: 14%; left: 14%; width: 68%; height: 24%; opacity: 1; }
+        .num-9::after  { top: 54%; left: 0%; width: 80%; height: 29%; opacity: 1; }
+
+        @media (max-width: 768px) {
+            .industrial-panel {
+                padding: 25px 15px;
+                gap: 15px;
+                transform: rotateX(5deg) rotateY(0deg);
+            }
+            .slots-bezel {
+                gap: 4px;
+                padding: 6px;
+            }
+            :root {
+                --slot-w: 45px;
+                --slot-h: 70px;
+            }
+            .chassis-label {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="industrial-panel">
+        <div class="time-chassis">
+            <div class="slots-bezel">
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="d1"></div>
+                </div>
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="d2"></div>
+                </div>
+            </div>
+            <span class="chassis-label">Days</span>
+        </div>
+
+        <div class="time-chassis">
+            <div class="slots-bezel">
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="h1"></div>
+                </div>
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="h2"></div>
+                </div>
+            </div>
+            <span class="chassis-label">Hours</span>
+        </div>
+
+        <div class="time-chassis">
+            <div class="slots-bezel">
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="m1"></div>
+                </div>
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="m2"></div>
+                </div>
+            </div>
+            <span class="chassis-label">Minutes</span>
+        </div>
+
+        <div class="time-chassis">
+            <div class="slots-bezel">
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="s1"></div>
+                </div>
+                <div class="numero-counting-wrapper">
+                    <div class="glass-overlay"></div>
+                    <div class="numero-shape" id="s2"></div>
+                </div>
+            </div>
+            <span class="chassis-label">Seconds</span>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        const TARGET_TIME = new Date(2026, 8, 30, 6, 32, 27).getTime();
+
+        const trackedSlots = {
+            d1: { el: document.getElementById("d1"), current: -1, isAnimating: false },
+            d2: { el: document.getElementById("d2"), current: -1, isAnimating: false },
+            h1: { el: document.getElementById("h1"), current: -1, isAnimating: false },
+            h2: { el: document.getElementById("h2"), current: -1, isAnimating: false },
+            m1: { el: document.getElementById("m1"), current: -1, isAnimating: false },
+            m2: { el: document.getElementById("m2"), current: -1, isAnimating: false },
+            s1: { el: document.getElementById("s1"), current: -1, isAnimating: false },
+            s2: { el: document.getElementById("s2"), current: -1, isAnimating: false }
+        };
+
+        const MORPH_DURATION_MS = 600;
+
+        function updateMorphShape(slotObj, newValue) {
+            if (slotObj.current === newValue || slotObj.isAnimating) return;
+
+            slotObj.isAnimating = true;
+            const el = slotObj.el;
+            el.className = "numero-shape num-" + newValue;
+            slotObj.current = newValue;
+
+            setTimeout(() => {
+                slotObj.isAnimating = false;
+            }, MORPH_DURATION_MS);
+        }
+
+        function runPreciseEngine() {
+            const timeDifference = TARGET_TIME - Date.now();
+
+            if (timeDifference <= 0) {
+                Object.values(trackedSlots).forEach(slot => updateMorphShape(slot, 0));
+                return;
+            }
+
+            const totalSecondsLeft = Math.ceil(timeDifference / 1000);
+
+            const d = Math.floor(totalSecondsLeft / 86400);
+            const remDays = totalSecondsLeft % 86400;
+            const h = Math.floor(remDays / 3600);
+            const remHours = remDays % 3600;
+            const m = Math.floor(remHours / 60);
+            const s = remHours % 60;
+
+            updateMorphShape(trackedSlots.d1, Math.floor(d / 10));
+            updateMorphShape(trackedSlots.d2, d % 10);
+            
+            updateMorphShape(trackedSlots.h1, Math.floor(h / 10));
+            updateMorphShape(trackedSlots.h2, h % 10);
+            
+            updateMorphShape(trackedSlots.m1, Math.floor(m / 10));
+            updateMorphShape(trackedSlots.m2, m % 10);
+            
+            updateMorphShape(trackedSlots.s1, Math.floor(s / 10));
+            setTimeout(() => {
+                updateMorphShape(trackedSlots.s2, s % 10);
+            }, 50);
+
+            const delayUntilNextSecond = 1000 - (Date.now() % 1000);
+            setTimeout(runPreciseEngine, delayUntilNextSecond);
+        }
+
+        runPreciseEngine();
+    </script>
+</body>
+</html>
